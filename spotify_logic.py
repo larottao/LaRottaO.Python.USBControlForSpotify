@@ -28,31 +28,41 @@ CLIENT_ID, CLIENT_SECRET = load_credentials()
 REDIRECT_URI = 'http://localhost:8888/callback/'
 SCOPE = 'user-modify-playback-state user-read-playback-state'
 
+print("Creating instance of Spotify API...")
+
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CLIENT_ID,
                                                client_secret=CLIENT_SECRET,
                                                redirect_uri=REDIRECT_URI,
                                                scope=SCOPE))
+print("Spotify API loaded ok.")
 
 def play():
-    sp.start_playback()
+    2
+    print("start selected.")
 
 def pause():
     sp.pause_playback()
+    print("pause selected.")
 
 def next_track():
+    print("next track selected.")
     sp.next_track()
 
 def previous_track():
     sp.previous_track()
+    print("previous track selected.")
 
 def print_current_song():
+    print("print current song selected.")
     current_track = sp.current_playback()
     if current_track and current_track['item']:
         print(f"Currently playing: {current_track['item']['name']} by {', '.join(artist['name'] for artist in current_track['item']['artists'])}")
     else:
         print("No track currently playing.")
 
-def main():
+'''
+def spot_main():
+  
     while True:
         print("\nSpotify Controller")
         print("1. Play")
@@ -79,5 +89,7 @@ def main():
         else:
             print("Invalid choice. Please try again.")
 
-if __name__ == "__main__":
-    main()
+spot_main()
+            '''
+
+
