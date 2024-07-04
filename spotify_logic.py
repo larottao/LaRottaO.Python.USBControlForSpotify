@@ -9,7 +9,11 @@ from spotipy.oauth2 import SpotifyOAuth
 
 CREDENTIALS_FILE = 'spotify_credentials.json'
 
-def run():
+global sp
+global callbacks
+
+def load_credentials():     
+
     if not os.path.exists(CREDENTIALS_FILE):
         credentials = {
             'CLIENT_ID': 'your_client_id',
@@ -24,72 +28,62 @@ def run():
             credentials = json.load(f)
             return credentials['CLIENT_ID'], credentials['CLIENT_SECRET']
 
-CLIENT_ID, CLIENT_SECRET = run()
-REDIRECT_URI = 'http://localhost:8888/callback/'
-SCOPE = 'user-modify-playback-state user-read-playback-state'
+def run(arg_callbacks):
 
-print("Creating instance of Spotify API...")
+    global callbacks 
+    callbacks = arg_callbacks
 
-sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CLIENT_ID,
-                                               client_secret=CLIENT_SECRET,
-                                               redirect_uri=REDIRECT_URI,
-                                               scope=SCOPE))
-print("Spotify API loaded ok.")
+    CLIENT_ID, CLIENT_SECRET = load_credentials()
+    REDIRECT_URI = 'http://localhost:8888/callback/'
+    SCOPE = 'user-modify-playback-state user-read-playback-state'
 
-def play():
-    2
-    print("start selected.")
+    print("Creating instance of Spotify API...")
+
+    global sp 
+    sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=CLIENT_ID,
+                                                client_secret=CLIENT_SECRET,
+                                                redirect_uri=REDIRECT_URI,
+                                                scope=SCOPE))
+    print("Spotify API loaded ok.")
+
+def play():   
+    try:
+        global sp 
+        sp.start_playback()
+        callbacks['update_screen']()
+    except:
+        return
 
 def pause():
-    sp.pause_playback()
-    print("pause selected.")
+    try:
+        global sp
+        sp.pause_playback()  
+        callbacks['reproduction_paused']()
+    except:
+        return
 
 def next_track():
-    print("next track selected.")
-    sp.next_track()
+    try:
+        global sp
+        sp.next_track()
+        callbacks['update_screen']()
+    except:
+        return
+
 
 def previous_track():
-    sp.previous_track()
-    print("previous track selected.")
+    try:
+        global sp
+        sp.previous_track()  
+        callbacks['update_screen']() 
+    except:
+        return
 
-def print_current_song():
-    print("print current song selected.")
-    current_track = sp.current_playback()
-    if current_track and current_track['item']:
-        print(f"Currently playing: {current_track['item']['name']} by {', '.join(artist['name'] for artist in current_track['item']['artists'])}")
-    else:
-        print("No track currently playing.")
-
-'''
-def spot_main():
-  
-    while True:
-        print("\nSpotify Controller")
-        print("1. Play")
-        print("2. Pause")
-        print("3. Next Track")
-        print("4. Previous Track")
-        print("5. Print Current Song")
-        print("6. Exit")
-
-        choice = input("Enter your choice: ")
-        
-        if choice == '1':
-            play()
-        elif choice == '2':
-            pause()
-        elif choice == '3':
-            next_track()
-        elif choice == '4':
-            previous_track()
-        elif choice == '5':
-            print_current_song()
-        elif choice == '6':
-            break
-        else:
-            print("Invalid choice. Please try again.")
-
-spot_main()
-            '''
+def print_current_song():    
+    try:
+        global sp
+        return sp.current_playback()    
+    except:
+        return
 
 
