@@ -1,14 +1,34 @@
-#requires pip install spotipy
-#remember to set the redirect URL on the spotify dashboard as http://localhost:8888/callback/
-#save your credentials on the json file located at the same path as the app
-
-import crystalfontz_logic
 import spotify_logic
+import crystalfontz_logic
 
-print("hello from main.py")
+def up_button_was_pressed():
+    spotify_logic.previous_track()
 
-spotify_logic.load_credentials()
-#crystalfontz_logic.main()
-    
+def down_button_was_pressed():
+    spotify_logic.next_track()
+
+def left_button_was_pressed():
+    spotify_logic.previous_track()
+
+def right_button_was_pressed():
+    spotify_logic.next_track()
+
+def accept_button_was_pressed():
+    spotify_logic.play()
+
+def reject_button_was_pressed():
+    spotify_logic.pause()
+
+callbacks = {
+    'up': up_button_was_pressed,
+    'down': down_button_was_pressed,
+    'left': left_button_was_pressed,
+    'right': right_button_was_pressed,
+    'accept': accept_button_was_pressed,
+    'reject': reject_button_was_pressed
+}
 
 
+
+spotify_logic.run()
+crystalfontz_logic.run(callbacks)

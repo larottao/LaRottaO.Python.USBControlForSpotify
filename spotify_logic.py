@@ -9,7 +9,7 @@ from spotipy.oauth2 import SpotifyOAuth
 
 CREDENTIALS_FILE = 'spotify_credentials.json'
 
-def load_credentials():
+def run():
     if not os.path.exists(CREDENTIALS_FILE):
         credentials = {
             'CLIENT_ID': 'your_client_id',
@@ -24,7 +24,7 @@ def load_credentials():
             credentials = json.load(f)
             return credentials['CLIENT_ID'], credentials['CLIENT_SECRET']
 
-CLIENT_ID, CLIENT_SECRET = load_credentials()
+CLIENT_ID, CLIENT_SECRET = run()
 REDIRECT_URI = 'http://localhost:8888/callback/'
 SCOPE = 'user-modify-playback-state user-read-playback-state'
 
