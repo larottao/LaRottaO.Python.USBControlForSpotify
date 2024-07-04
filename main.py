@@ -22,7 +22,7 @@ def print_paused():
 
 def update_screen():
   
-    time.sleep(0.1)
+    time.sleep(0.4)
     current_playback = spotify_logic.sp.current_playback()
     
     if current_playback and current_playback['item']:       
