@@ -19,22 +19,29 @@ def print_paused():
         crystalfontz_logic.send_text_to_screen(2, "", 0, True)
         crystalfontz_logic.send_text_to_screen(3, "", 0, True)
     
+def format_time(ms):
+    # Convert milliseconds to minutes:seconds
+    seconds = ms // 1000
+    minutes, seconds = divmod(seconds, 60)
+    return f"{minutes:02}:{seconds:02}"
 
 def update_screen():
-  
-    time.sleep(0.4)
-    current_playback = spotify_logic.sp.current_playback()
     
-    if current_playback and current_playback['item']:       
+    current_playback = spotify_logic.sp.current_playback()
+   
+    if current_playback and current_playback['is_playing'] and current_playback['item']:
+   
+        position = current_playback['progress_ms']
+        duration = current_playback['item']['duration_ms']
 
         song = current_playback['item']['name'][:20]
-        artist = (', '.join(artist['name'] for artist in current_playback['item']['artists']))[:20]
-    
+        artist = (', '.join(artist['name'] for artist in current_playback['item']['artists']))[:20]    
 
         crystalfontz_logic.send_text_to_screen(0, song, 0, True)
-        crystalfontz_logic.send_text_to_screen(1, artist, 0, True)
-        crystalfontz_logic.send_text_to_screen(2, "", 0, True)
-        crystalfontz_logic.send_text_to_screen(3, "", 0, True)  
+        crystalfontz_logic.send_text_to_screen(1, artist, 0, True)     
+        crystalfontz_logic.send_text_to_screen(2, "", 0, True)  
+        crystalfontz_logic.send_text_to_screen(3, format_time(position) + " / " + format_time(duration), 0, True)  
+      
 
 
 
