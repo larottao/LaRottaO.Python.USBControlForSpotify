@@ -7,6 +7,10 @@ import os
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
+import threading
+
+import time
+
 CREDENTIALS_FILE = 'spotify_credentials.json'
 
 global sp
@@ -28,10 +32,15 @@ def load_credentials():
             credentials = json.load(f)
             return credentials['CLIENT_ID'], credentials['CLIENT_SECRET']
 
-def run(arg_callbacks):
+def format_time(ms):
+    # Convert milliseconds to minutes:seconds
+    seconds = ms // 1000
+    minutes, seconds = divmod(seconds, 60)
+    return f"{minutes:02}:{seconds:02}"
 
-    global callbacks 
-    callbacks = arg_callbacks
+def spotify_worker():
+ 
+    global callbacks   
 
     CLIENT_ID, CLIENT_SECRET = load_credentials()
     REDIRECT_URI = 'http://localhost:8888/callback/'
@@ -45,6 +54,22 @@ def run(arg_callbacks):
                                                 redirect_uri=REDIRECT_URI,
                                                 scope=SCOPE))
     print("Spotify API loaded ok.")
+
+   # Example of Spotify logic running continuously
+    while True:
+        try:
+            current_playback = sp.current_playback()
+            if current_playback and current_playback['is_playing']:
+                print("Currently playing:", current_playback['item']['name'])
+                position = current_playback['progress_ms']
+                duration = current_playback['item']['duration_ms']
+                print(f"Position: {format_time(position)} / {format_time(duration)}")
+                # Example: Update screen callback
+                callbacks['update_screen']()
+            time.sleep(1)  # Query every second
+        except Exception as e:
+            print(f"Error in Spotify worker: {e}")
+            time.sleep(10)  # Retry after 10 seconds on error         
 
 def play():   
     try:
@@ -85,5 +110,16 @@ def print_current_song():
         return sp.current_playback()    
     except:
         return
+    
 
+def run(arg_callbacks):
+    global callbacks
+    callbacks = arg_callbacks
 
+    # Start a separate thread for Spotify logic
+    spotify_thread = threading.Thread(target=spotify_worker)
+    spotify_thread.daemon = True
+    spotify_thread.start()
+
+    # Optionally return the thread object if you need to manage it further
+    return spotify_thread
