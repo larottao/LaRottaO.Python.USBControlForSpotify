@@ -8,8 +8,9 @@ def print_welcome():
     
     crystalfontz_logic.send_text_to_screen(0, "CrystalFontz plugin", 0, True)
     crystalfontz_logic.send_text_to_screen(1, "for Spotify ", 0, True)
-    crystalfontz_logic.send_text_to_screen(2, "by LaRottaO", 0, True)
-    crystalfontz_logic.send_text_to_screen(3, "", 0, True)
+    crystalfontz_logic.send_text_to_screen(2, "", 0, True)
+    crystalfontz_logic.send_text_to_screen(3, "by LaRottaO", 0, True)
+
 
 
 def print_paused():

@@ -54,22 +54,14 @@ def spotify_worker():
                                                 redirect_uri=REDIRECT_URI,
                                                 scope=SCOPE))
     print("Spotify API loaded ok.")
-
-   # Example of Spotify logic running continuously
+ 
     while True:
-        try:
-            current_playback = sp.current_playback()
-            if current_playback and current_playback['is_playing']:
-                print("Currently playing:", current_playback['item']['name'])
-                position = current_playback['progress_ms']
-                duration = current_playback['item']['duration_ms']
-                print(f"Position: {format_time(position)} / {format_time(duration)}")
-                # Example: Update screen callback
-                callbacks['update_screen']()
-            time.sleep(1)  # Query every second
+        try:           
+            callbacks['update_screen']()
+            time.sleep(1)
         except Exception as e:
             print(f"Error in Spotify worker: {e}")
-            time.sleep(10)  # Retry after 10 seconds on error         
+            time.sleep(10)         
 
 def play():   
     try:
